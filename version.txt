@@ -1,0 +1,5 @@
+version=3.4.8
+nombre=RFND POSICIONAL ESTABLE
+fecha=04jun2026
+base=Logica Oro
+pendiente=Total Neto a pagar en hoja Faltan en Maverick
