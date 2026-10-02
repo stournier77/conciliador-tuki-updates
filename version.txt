@@ -1,5 +1,5 @@
-version=3.4.8
-nombre=RFND POSICIONAL ESTABLE
-fecha=04jun2026
-base=Logica Oro
-pendiente=Total Neto a pagar en hoja Faltan en Maverick
+version=3.6.1
+nombre=UUID WINDOWS POWERSHELL CIM
+fecha=02oct2026
+base=v3.6
+mensaje=Corrige la deteccion del UUID en Windows mediante PowerShell/CIM, con WMIC como respaldo; conserva los equipos autorizados y toda la logica de conciliacion de v3.6.
