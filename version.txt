@@ -1,5 +1,5 @@
-version=3.6.1
-nombre=UUID WINDOWS POWERSHELL CIM
-fecha=02oct2026
-base=v3.6
-mensaje=Corrige la deteccion del UUID en Windows mediante PowerShell/CIM, con WMIC como respaldo; conserva los equipos autorizados y toda la logica de conciliacion de v3.6.
+version=3.6.2
+nombre=COMPANIAS TAP Y ARAJET
+fecha=13oct2026
+base=v3.6.1
+mensaje=Agrega TP como TAP Air Portugal y 181/DM como ARAJET; conserva la logica de conciliacion y la deteccion UUID de v3.6.1.
