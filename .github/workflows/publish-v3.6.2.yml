@@ -1,0 +1,32 @@
+name: Publish IATA v3.6.2
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/publish-v3.6.2.yml']
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 1f72eea5c88c7c7ea650eebc64a8bff59c9a72e6
+          persist-credentials: false
+      - name: Verify exact release assets
+        run: |
+          echo '59105913b555346d4ffb39d54b7628f00ec58e6b84f5862eebfd83d30c2b8dd9  latest_pc.zip' | sha256sum -c -
+          echo '014595a544058e06701f2d9504f40ea9a112d4cf9fc747b6274abcdad0c72aef  latest_mac.zip' | sha256sum -c -
+          echo 'e9164076bc8a6fdd0097b563b4e9f2e3466ab2aab0e57c218a625c3a6bfce451  version.txt' | sha256sum -c -
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          cat > release-notes.txt <<'NOTES'
+          Fecha: 13oct2026.
+          Agrega TP como TAP Air Portugal y los prefijos 181 y DM como ARAJET.
+          Actualiza nombres y agrupacion por compania en hojas y resumenes.
+          Conserva el motor de conciliacion y la deteccion UUID de v3.6.1.
+          NOTES
+          gh release create v3.6.2 latest_pc.zip latest_mac.zip version.txt --target 1f72eea5c88c7c7ea650eebc64a8bff59c9a72e6 --title v3.6.2 --notes-file release-notes.txt --latest
