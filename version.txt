@@ -1,5 +1,1 @@
-version=3.6.2
-nombre=COMPANIAS TAP Y ARAJET
-fecha=13oct2026
-base=v3.6.1
-mensaje=Agrega TP como TAP Air Portugal y 181/DM como ARAJET; conserva la logica de conciliacion y la deteccion UUID de v3.6.1.
+3.7.0
