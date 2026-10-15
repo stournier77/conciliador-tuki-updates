@@ -9,3 +9,5 @@ Los paquetes mantienen compatibilidad con los actualizadores anteriores. La prim
 Pruebas: python -m unittest discover -s tests; en Windows se prueban además la recuperación de Python ausente y la reutilización del entorno con PowerShell. Generar paquetes: python launchers/Preparar_publicacion.py build.
 
 El motor IATA se conserva como dependencia inmutable del paquete público 3.6.2: se obtiene una sola vez de su commit exacto, se verifican SHA256 del paquete y del archivo y se guarda en runtime_shared. Las actualizaciones no eliminan ese caché. La interfaz nueva carga sus definiciones de cálculo sin modificarlas y cambia únicamente presentación, nombres y rutas de salida. No se vuelven a publicar las listas de equipos ni las reglas de conciliación dentro del código nuevo. La primera apertura con el diseño nuevo necesita conexión para obtener esa dependencia.
+
+Corrección HTTPS: si el Python del equipo carece de certificados raíz, la descarga usa curl en Mac o la confianza del sistema en Windows. Se mantiene la validación TLS y SHA256 del paquete. No se modifica la configuración de certificados del equipo.
