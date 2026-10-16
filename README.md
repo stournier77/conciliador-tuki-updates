@@ -11,3 +11,5 @@ Pruebas: python -m unittest discover -s tests; en Windows se prueban además la 
 El motor IATA se conserva como dependencia inmutable del paquete público 3.6.2: se obtiene una sola vez de su commit exacto, se verifican SHA256 del paquete y del archivo y se guarda en runtime_shared. Las actualizaciones no eliminan ese caché. La interfaz nueva carga sus definiciones de cálculo sin modificarlas y cambia únicamente presentación, nombres y rutas de salida. No se vuelven a publicar las listas de equipos ni las reglas de conciliación dentro del código nuevo. La primera apertura con el diseño nuevo necesita conexión para obtener esa dependencia.
 
 Corrección HTTPS: si el Python del equipo carece de certificados raíz, la descarga usa curl en Mac o la confianza del sistema en Windows. Se mantiene la validación TLS y SHA256 del paquete. No se modifica la configuración de certificados del equipo.
+
+Resultados en Documentos/App Conciliador IATA Maveric/archivos conciliados. El selector de escritorio abre la carpeta de esta aplicación en Mac y Windows; se mantiene arrastrar archivos. Los históricos de la carpeta anterior se copian sin borrar originales ni sobrescribir.

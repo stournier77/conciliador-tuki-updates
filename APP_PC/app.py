@@ -1,7 +1,7 @@
 from sevens_engine import legacy_code
 exec(legacy_code(),globals())
-VERSION='3.7.2'
-CREATED_LABEL='15/10/2026'
+VERSION='3.7.3'
+CREATED_LABEL='16/10/2026'
 from sevens_paths import output_root
 REPORTS_DIR=output_root()
 OUT_DIR=REPORTS_DIR
