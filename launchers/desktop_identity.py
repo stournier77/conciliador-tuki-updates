@@ -1,6 +1,6 @@
 """Actualiza únicamente el acceso propio del conciliador de Uruguay."""
 from pathlib import Path
-import json,os,plistlib,shlex,subprocess
+import json,os,plistlib,shlex,subprocess,shutil,tempfile,time
 
 NAME='Conciliador IATA Uruguay'
 IDS={'uy.sevens.conciliador.iata','uy.sevens.conciliador.iata.abrir'}
@@ -45,19 +45,34 @@ $link.Save()
         desktop=Path(desktop) if desktop else Path.home()/'Desktop'
         old=desktop/'Conciliador IATA Maveric.app'
         bundle=desktop/(NAME+'.app')
-        if old.exists() and not bundle.exists():
-            info=plistlib.loads((old/'Contents/Info.plist').read_bytes())
-            if info.get('CFBundleIdentifier') in IDS:old.rename(bundle)
-        if bundle.exists():
-            info=plistlib.loads((bundle/'Contents/Info.plist').read_bytes())
-            if info.get('CFBundleIdentifier') not in IDS:raise ValueError('El acceso Uruguay existente pertenece a otro programa')
-        contents=bundle/'Contents';resources=contents/'Resources';macos=contents/'MacOS'
-        icon='Uruguay-'+version
-        write_changed(resources/(icon+'.icns'),(target/'assets/Conciliador_IATA_Maveric.icns').read_bytes())
-        command='#!/bin/zsh\nnohup /bin/zsh '+shlex.quote(str(target/'Abrir Conciliador IATA Maveric.command'))+' >> '+shlex.quote(str(target/'logs/acceso_escritorio.log'))+' 2>&1 < /dev/null &\n'
-        launcher=macos/'InicioSevens';write_changed(launcher,command.encode());launcher.chmod(0o755)
-        info=dict(CFBundleExecutable='InicioSevens',CFBundleName=NAME,CFBundleDisplayName=NAME,CFBundleIdentifier='uy.sevens.conciliador.iata.abrir',CFBundleIconFile=icon,CFBundlePackageType='APPL',CFBundleVersion=version,NSHighResolutionCapable=True)
-        write_changed(contents/'Info.plist',plistlib.dumps(info))
-        subprocess.run(['codesign','--force','--deep','--sign','-',str(bundle)],check=True,timeout=30,capture_output=True)
-        os.utime(bundle,None)
+        existing=bundle if bundle.exists() else old if old.exists() else None
+        if existing:
+            info=plistlib.loads((existing/'Contents/Info.plist').read_bytes())
+            if info.get('CFBundleIdentifier') not in IDS:raise ValueError('El acceso existente pertenece a otro programa')
+        # Construir y firmar un bundle limpio; el original se conserva hasta verificarlo.
+        logs=target/'logs';logs.mkdir(parents=True,exist_ok=True)
+        with tempfile.TemporaryDirectory(prefix='desktop-',dir=logs) as temp:
+            candidate=Path(temp)/(NAME+'.app')
+            contents=candidate/'Contents';resources=contents/'Resources';macos=contents/'MacOS'
+            icon='Uruguay-'+version
+            write_changed(resources/(icon+'.icns'),(target/'assets/Conciliador_IATA_Maveric.icns').read_bytes())
+            write_changed(macos/'UruguayLauncher',(target/'assets/mac_launcher').read_bytes())
+            (macos/'UruguayLauncher').chmod(0o755)
+            command='#!/bin/bash\nexec /bin/zsh '+shlex.quote(str(target/'launchers/Abrir_Conciliador_Sevens_Mac.command'))+' >> '+shlex.quote(str(logs/'acceso_escritorio.log'))+' 2>&1\n'
+            write_changed(resources/'launch.sh',command.encode())
+            info=dict(CFBundleExecutable='UruguayLauncher',CFBundleName=NAME,CFBundleDisplayName=NAME,CFBundleIdentifier='uy.sevens.conciliador.iata.abrir',CFBundleIconFile=icon,CFBundlePackageType='APPL',CFBundleVersion=version,NSHighResolutionCapable=True,LSUIElement=True)
+            write_changed(contents/'Info.plist',plistlib.dumps(info))
+            for command in (['codesign','--force','--deep','--sign','-',str(candidate)],['codesign','--verify','--deep','--strict',str(candidate)]):
+                result=subprocess.run(command,check=True,timeout=30,capture_output=True,text=True)
+            backup=None
+            if existing:
+                backup=target/'backups'/('desktop_'+version+'_'+str(time.time_ns()))/existing.name
+                backup.parent.mkdir(parents=True,exist_ok=True)
+                shutil.move(str(existing),str(backup))
+            try:
+                shutil.move(str(candidate),str(bundle))
+            except BaseException:
+                if backup and not existing.exists():shutil.move(str(backup),str(existing))
+                raise
+            os.utime(bundle,None)
     write_changed(marker,(version+'\n').encode())

@@ -31,7 +31,7 @@ jobs:
           make_latest: true
           fail_on_unmatched_files: true
           body: |
-            Selector del navegador en Windows para evitar ventanas ocultas. Icono celeste con 77 mas chicos e IATA mas grande, actualizado en escritorio y panel lateral. Motor y reglas de conciliacion conservados.
+            Repara el acceso de Mac con lanzador nativo universal y bundle limpio, firmado y verificado antes de reemplazar el anterior. Conserva respaldo del acceso, el selector del navegador en Windows y el motor de conciliacion.
             Mismos accesos de escritorio en Mac y Windows, actualización automática, reapertura de la ventana y resultados en Documentos.
             Incluye migración automática desde los actualizadores anteriores. Se conservan los históricos y la configuración local.
           files: |
