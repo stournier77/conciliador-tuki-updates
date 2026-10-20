@@ -71,8 +71,15 @@ $link.Save()
                 shutil.move(str(existing),str(backup))
             try:
                 shutil.move(str(candidate),str(bundle))
+                # Finder puede conservar el metadato visual del acceso anterior.
+                if 'com.apple.FinderInfo' in os.listxattr(bundle):
+                    os.removexattr(bundle,'com.apple.FinderInfo')
+                for command in (['codesign','--force','--deep','--sign','-',str(bundle)],['codesign','--verify','--deep','--strict',str(bundle)]):
+                    subprocess.run(command,check=True,timeout=30,capture_output=True,text=True)
             except BaseException:
-                if backup and not existing.exists():shutil.move(str(backup),str(existing))
+                if backup:
+                    if bundle.exists():shutil.rmtree(bundle)
+                    if not existing.exists():shutil.move(str(backup),str(existing))
                 raise
             os.utime(bundle,None)
     write_changed(marker,(version+'\n').encode())
