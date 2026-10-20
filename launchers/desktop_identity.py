@@ -72,8 +72,7 @@ $link.Save()
             try:
                 shutil.move(str(candidate),str(bundle))
                 # Finder puede conservar el metadato visual del acceso anterior.
-                if 'com.apple.FinderInfo' in os.listxattr(bundle):
-                    os.removexattr(bundle,'com.apple.FinderInfo')
+                subprocess.run(['xattr','-d','com.apple.FinderInfo',str(bundle)],capture_output=True,timeout=10)
                 for command in (['codesign','--force','--deep','--sign','-',str(bundle)],['codesign','--verify','--deep','--strict',str(bundle)]):
                     subprocess.run(command,check=True,timeout=30,capture_output=True,text=True)
             except BaseException:

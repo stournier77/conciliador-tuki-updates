@@ -25,7 +25,7 @@ class DesktopIdentityTests(unittest.TestCase):
             (old/'Contents/Resources/keep.txt').write_text('keep')
             with patch.object(identity.subprocess,'run') as sign:
                 identity.refresh(target,desktop)
-                self.assertEqual(sign.call_count,4)
+                self.assertEqual(sign.call_count,5)
             app=desktop/'Conciliador IATA Uruguay.app'
             self.assertFalse(old.exists())
             info=plistlib.loads((app/'Contents/Info.plist').read_bytes())
