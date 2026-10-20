@@ -27,11 +27,11 @@ jobs:
         with:
           tag_name: v${{ steps.version.outputs.value }}
           target_commitish: ${{ github.sha }}
-          name: Conciliador IATA ${{ steps.version.outputs.value }} · 16/10/2026
+          name: Conciliador IATA ${{ steps.version.outputs.value }} · 20/10/2026
           make_latest: true
           fail_on_unmatched_files: true
           body: |
-            Diseño Sevens unificado, con el motor y las reglas de conciliación conservados.
+            Portada de Uruguay con bandera e identificación del país. Motor y reglas de conciliación conservados.
             Mismos accesos de escritorio en Mac y Windows, actualización automática, reapertura de la ventana y resultados en Documentos.
             Incluye migración automática desde los actualizadores anteriores. Se conservan los históricos y la configuración local.
           files: |

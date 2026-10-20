@@ -1,7 +1,7 @@
 from sevens_engine import legacy_code
 exec(legacy_code(),globals())
-VERSION='3.7.4'
-CREATED_LABEL='16/10/2026'
+VERSION='3.7.5'
+CREATED_LABEL='20/10/2026'
 from sevens_paths import output_root
 REPORTS_DIR=output_root()
 OUT_DIR=REPORTS_DIR
@@ -12,7 +12,7 @@ def output_name(start,end):
 
 from sevens_ui import apply_design, header, sidebar_brand, sidebar_info, file_heading, footer
 from sevens_migrate import migrate
-st.set_page_config(page_title=APP_NAME,page_icon='🧾',layout='wide',initial_sidebar_state='expanded')
+st.set_page_config(page_title='Conciliador IATA–Maveric Uruguay',page_icon='🇺🇾',layout='wide',initial_sidebar_state='expanded')
 migrate()
 apply_design()
 device_uuid,device_info=check_device_authorized()
@@ -21,7 +21,7 @@ if not device_info:
     st.warning(f"UUID detectado: {device_uuid or 'No pude detectar UUID'}")
     st.stop()
 with st.sidebar:
-    sidebar_brand('IATA')
+    sidebar_brand('IATA · Uruguay')
     if st.button('Abrir carpeta de conciliaciones',icon=':material/folder_open:',use_container_width=True,key='abrir_carpeta'):
         REPORTS_DIR.mkdir(parents=True,exist_ok=True)
         if platform.system()=='Darwin': subprocess.Popen(['open',str(REPORTS_DIR)])
@@ -30,7 +30,7 @@ with st.sidebar:
     sidebar_info(device_info['name'],VERSION,CREATED_LABEL)
     if st.button('Cerrar aplicación',icon=':material/power_settings_new:',use_container_width=True,key='cerrar_aplicacion'):
         os._exit(0)
-header('IATA','Compará la liquidación IATA con los registros de Maveric.')
+header('IATA · Uruguay 🇺🇾','Compará la liquidación IATA con los registros de Maveric.')
 st.markdown('<h2 class="sevens-section-title">Cargar archivos</h2>',unsafe_allow_html=True)
 col1,col2,col3=st.columns(3,gap='medium')
 with col1:
