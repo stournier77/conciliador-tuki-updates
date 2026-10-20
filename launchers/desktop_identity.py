@@ -34,7 +34,7 @@ if((Test-Path $old) -and -not(Test-Path $destination)) {
 $link=$shell.CreateShortcut($destination)
 if($link.TargetPath -and $link.TargetPath -ne $target){throw 'El acceso Uruguay existente apunta a otro programa'}
 $link.TargetPath=$target;$link.WorkingDirectory=$Root
-$link.IconLocation=(Join-Path $Root 'assets/Conciliador_IATA_Maveric.ico')+',0'
+$link.IconLocation=(Join-Path $Root 'assets/uruguay-v3.7.7.ico')+',0'
 $link.Description='Conciliador IATA Uruguay '+$Version
 $link.Save()
 '''

@@ -72,8 +72,20 @@ def remember_folder(app_folder,folder):
     finally:
         if temporary and temporary.exists():temporary.unlink()
 
+def use_browser_uploaders():
+    """Restaura el selector del navegador, incluso en una sesión ya abierta."""
+    uploader=st.file_uploader
+    while True:
+        original=getattr(uploader,'_sevens_original',None)
+        if original is None or original is uploader:break
+        uploader=original
+    st.file_uploader=uploader
+
 def install_native_uploaders(folder_factory,first_key=None):
     """Adaptador de presentación: los motores reciben el mismo archivo en memoria."""
+    if platform.system()=='Windows':
+        use_browser_uploaders()
+        return
     if platform.system()!='Darwin' and os.name!='nt':return
     original=getattr(st.file_uploader,'__dict__',{}).get('_sevens_original',st.file_uploader)
     first_upload=[first_key]

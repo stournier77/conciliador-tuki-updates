@@ -31,7 +31,7 @@ jobs:
           make_latest: true
           fail_on_unmatched_files: true
           body: |
-            Bandera de Uruguay como imagen compatible con Windows y renovación automática del acceso de escritorio Uruguay. Motor y reglas de conciliación conservados.
+            Selector del navegador en Windows para evitar ventanas ocultas. Icono celeste con 77 mas chicos e IATA mas grande, actualizado en escritorio y panel lateral. Motor y reglas de conciliacion conservados.
             Mismos accesos de escritorio en Mac y Windows, actualización automática, reapertura de la ventana y resultados en Documentos.
             Incluye migración automática desde los actualizadores anteriores. Se conservan los históricos y la configuración local.
           files: |
