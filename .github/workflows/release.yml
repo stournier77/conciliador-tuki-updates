@@ -31,7 +31,7 @@ jobs:
           make_latest: true
           fail_on_unmatched_files: true
           body: |
-            Portada de Uruguay con bandera e identificación del país. Motor y reglas de conciliación conservados.
+            Bandera de Uruguay como imagen compatible con Windows y renovación automática del acceso de escritorio Uruguay. Motor y reglas de conciliación conservados.
             Mismos accesos de escritorio en Mac y Windows, actualización automática, reapertura de la ventana y resultados en Documentos.
             Incluye migración automática desde los actualizadores anteriores. Se conservan los históricos y la configuración local.
           files: |

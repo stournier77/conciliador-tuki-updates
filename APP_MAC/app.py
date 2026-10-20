@@ -1,6 +1,6 @@
 from sevens_engine import legacy_code
 exec(legacy_code(),globals())
-VERSION='3.7.5'
+VERSION='3.7.6'
 CREATED_LABEL='20/10/2026'
 from sevens_paths import output_root
 REPORTS_DIR=output_root()
@@ -12,7 +12,7 @@ def output_name(start,end):
 
 from sevens_ui import apply_design, header, sidebar_brand, sidebar_info, file_heading, footer
 from sevens_migrate import migrate
-st.set_page_config(page_title='Conciliador IATA–Maveric Uruguay',page_icon='🇺🇾',layout='wide',initial_sidebar_state='expanded')
+st.set_page_config(page_title='Conciliador IATA–Maveric Uruguay',page_icon=str(Path(__file__).resolve().parents[1]/'assets/uruguay.png'),layout='wide',initial_sidebar_state='expanded')
 migrate()
 apply_design()
 device_uuid,device_info=check_device_authorized()

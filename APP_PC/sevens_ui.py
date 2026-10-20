@@ -17,8 +17,13 @@ def apply_design():
 
 
 def header(name, subtitle):
+    title = html.escape(name)
+    flag = ASSETS / "uruguay.png"
+    if "Uruguay" in name and flag.exists():
+        encoded = base64.b64encode(flag.read_bytes()).decode("ascii")
+        title = title.replace("🇺🇾", "").strip() + f' <img src="data:image/png;base64,{encoded}" alt="Bandera de Uruguay" style="width:32px;height:24px;object-fit:contain;vertical-align:middle;margin-left:5px">'
     st.markdown(f'''<div class="sevens-hero"><div class="sevens-eyebrow">SEVENS TRAVEL / CONCILIACIONES</div>
-<h1>Conciliador {html.escape(name)}</h1><p>{html.escape(subtitle)}</p></div>''', unsafe_allow_html=True)
+<h1>Conciliador {title}</h1><p>{html.escape(subtitle)}</p></div>''', unsafe_allow_html=True)
 
 
 def file_heading(text):

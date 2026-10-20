@@ -240,6 +240,12 @@ def main():
         run([sys.executable, ROOT / 'launchers/arranque.py', '--no-update'], timeout=None)
         return
     prepare()
+    if SETTINGS['kind']=='IATA' and not args.check_only:
+        try:
+            from desktop_identity import refresh
+            refresh(ROOT)
+        except Exception as exc:
+            print('No se pudo renovar el acceso de Uruguay:',exc,flush=True)
     if not args.check_only: serve()
 
 if __name__ == '__main__':

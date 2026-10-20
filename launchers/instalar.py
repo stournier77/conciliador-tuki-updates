@@ -7,6 +7,11 @@ def install():
     target=documents_folder()/SETTINGS['install_folder']/'Archivos APP'
     deploy(ROOT,target)
     kind=SETTINGS['kind']
+    if kind=='IATA':
+        from desktop_identity import refresh
+        refresh(target)
+        print('Instalación lista:',target)
+        return
     legacy='Abrir Conciliador '+kind+' Maveric'
     name='Conciliador Bancos Maveric Sevens' if kind=='Bancos' else 'Conciliador IATA Maveric'
     if os.name=='nt':
