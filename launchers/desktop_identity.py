@@ -51,7 +51,7 @@ $link.Save()
             if info.get('CFBundleIdentifier') not in IDS:raise ValueError('El acceso existente pertenece a otro programa')
         # Construir y firmar un bundle limpio; el original se conserva hasta verificarlo.
         logs=target/'logs';logs.mkdir(parents=True,exist_ok=True)
-        with tempfile.TemporaryDirectory(prefix='desktop-',dir=logs) as temp:
+        with tempfile.TemporaryDirectory(prefix='sevens-desktop-') as temp:
             candidate=Path(temp)/(NAME+'.app')
             contents=candidate/'Contents';resources=contents/'Resources';macos=contents/'MacOS'
             icon='Uruguay-'+version
@@ -68,17 +68,22 @@ $link.Save()
             if existing:
                 backup=target/'backups'/('desktop_'+version+'_'+str(time.time_ns()))/existing.name
                 backup.parent.mkdir(parents=True,exist_ok=True)
-                shutil.move(str(existing),str(backup))
+                shutil.copytree(existing,backup)
             try:
-                shutil.move(str(candidate),str(bundle))
+                if existing and existing!=bundle and not bundle.exists():
+                    try:existing.rename(bundle)
+                    except OSError:pass
+                # Algunos escritorios sincronizados impiden mover el paquete completo.
+                # Copiar sobre el acceso conserva su carpeta y evita borrarla primero.
+                shutil.copytree(candidate,bundle,dirs_exist_ok=True,copy_function=shutil.copyfile)
+                (bundle/'Contents/MacOS/UruguayLauncher').chmod(0o755)
                 # Finder puede conservar el metadato visual del acceso anterior.
                 subprocess.run(['xattr','-d','com.apple.FinderInfo',str(bundle)],capture_output=True,timeout=10)
                 for command in (['codesign','--force','--deep','--sign','-',str(bundle)],['codesign','--verify','--deep','--strict',str(bundle)]):
                     subprocess.run(command,check=True,timeout=30,capture_output=True,text=True)
             except BaseException:
                 if backup:
-                    if bundle.exists():shutil.rmtree(bundle)
-                    if not existing.exists():shutil.move(str(backup),str(existing))
+                    shutil.copytree(backup,existing,dirs_exist_ok=True)
                 raise
             os.utime(bundle,None)
     write_changed(marker,(version+'\n').encode())

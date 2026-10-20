@@ -31,7 +31,7 @@ jobs:
           make_latest: true
           fail_on_unmatched_files: true
           body: |
-            Repara el acceso de Mac con lanzador nativo universal y bundle limpio, firmado y verificado antes de reemplazar el anterior. Conserva respaldo del acceso, el selector del navegador en Windows y el motor de conciliacion.
+            Repara el acceso de Mac con lanzador nativo universal. Prepara el bundle fuera de carpetas sincronizadas y renueva el acceso sin borrarlo ni moverlo primero, con respaldo y firma verificada. Conserva la carga Windows y el motor de conciliacion.
             Mismos accesos de escritorio en Mac y Windows, actualización automática, reapertura de la ventana y resultados en Documentos.
             Incluye migración automática desde los actualizadores anteriores. Se conservan los históricos y la configuración local.
           files: |

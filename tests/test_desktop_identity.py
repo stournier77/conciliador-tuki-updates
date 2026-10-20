@@ -58,6 +58,20 @@ class DesktopIdentityTests(unittest.TestCase):
             self.assertEqual((old/'Contents/Info.plist').read_bytes(),data)
             self.assertFalse((desktop/'Conciliador IATA Uruguay.app').exists())
 
+    @unittest.skipIf(os.name=='nt','Bundle Mac')
+    def test_refresh_keeps_bundle_directory_and_stages_outside_synced_folder(self):
+        with tempfile.TemporaryDirectory() as temp:
+            target,desktop=self.make_target(Path(temp))
+            bundle=desktop/'Conciliador IATA Uruguay.app';(bundle/'Contents').mkdir(parents=True)
+            (bundle/'Contents/Info.plist').write_bytes(plistlib.dumps({'CFBundleIdentifier':'uy.sevens.conciliador.iata.abrir'}))
+            inode=bundle.stat().st_ino
+            with patch.object(identity.subprocess,'run') as signing,patch.object(identity.shutil,'move',side_effect=AssertionError('No mover el bundle')):
+                identity.refresh(target,desktop)
+            self.assertEqual(bundle.stat().st_ino,inode)
+            candidate=Path(signing.call_args_list[0].args[0][-1])
+            self.assertNotIn(str(target),str(candidate))
+            self.assertEqual((bundle/'Contents/MacOS/UruguayLauncher').read_bytes(),b'native')
+
     def test_windows_script_uses_actual_desktop_and_correct_target(self):
         with tempfile.TemporaryDirectory() as temp:
             target,desktop=self.make_target(Path(temp))
