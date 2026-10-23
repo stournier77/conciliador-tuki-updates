@@ -24,8 +24,8 @@ def current_mac_shortcut(bundle,target):
         resources=bundle/'Contents/Resources'
         if (resources/icon).read_bytes()!=(target/'assets/Conciliador_IATA_Maveric.icns').read_bytes():
             return False
-        if (bundle/'Contents/MacOS/UruguayLauncher').read_bytes()!=(target/'assets/mac_launcher').read_bytes():
-            return False
+        # La firma de macOS cambia los bytes del ejecutable al instalarlo.
+        # Validar su identidad y ruta sin confundir esa firma con una actualización.
         command='#!/bin/bash\nexec /bin/zsh '+shlex.quote(str(target/'launchers/Abrir_Conciliador_Sevens_Mac.command'))+' >> '+shlex.quote(str(target/'logs/acceso_escritorio.log'))+' 2>&1\n'
         return (resources/'launch.sh').read_text()==command and os.access(bundle/'Contents/MacOS/UruguayLauncher',os.X_OK)
     except (OSError,ValueError,plistlib.InvalidFileException):
