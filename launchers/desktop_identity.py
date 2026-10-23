@@ -27,7 +27,9 @@ def current_mac_shortcut(bundle,target):
         # La firma de macOS cambia los bytes del ejecutable al instalarlo.
         # Validar su identidad y ruta sin confundir esa firma con una actualización.
         command='#!/bin/bash\nexec /bin/zsh '+shlex.quote(str(target/'launchers/Abrir_Conciliador_Sevens_Mac.command'))+' >> '+shlex.quote(str(target/'logs/acceso_escritorio.log'))+' 2>&1\n'
-        return (resources/'launch.sh').read_text()==command and os.access(bundle/'Contents/MacOS/UruguayLauncher',os.X_OK)
+        # Admitir el acceso reparado: inicia en segundo plano y libera Finder.
+        detached=command.replace('\nexec /bin/zsh ','\n/usr/bin/nohup /bin/zsh ').replace(' 2>&1\n',' 2>&1 < /dev/null &\nexit 0\n')
+        return (resources/'launch.sh').read_text() in (command,detached) and os.access(bundle/'Contents/MacOS/UruguayLauncher',os.X_OK)
     except (OSError,ValueError,plistlib.InvalidFileException):
         return False
 

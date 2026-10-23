@@ -31,9 +31,9 @@ jobs:
           make_latest: true
           fail_on_unmatched_files: true
           body: |
-            Conserva el acceso de escritorio y su icono personalizado en Mac cuando el lanzador, su ruta y el logo ya son correctos.
-            Evita reconstruir el bundle de Finder por un cambio de versión de la aplicación.
-            Conserva la detección automática del período IATA. Sin cambios en los cálculos.
+            Conserva los accesos Mac reparados que inician en segundo plano, incluidos los que apuntan a un lanzador fuera de iCloud.
+            Evita reemplazar el acceso estable por el lanzador anterior durante una actualización.
+            Mantiene el logo y la detección automática del período. Sin cambios en los cálculos.
           files: |
             build/latest_mac.zip
             build/latest_pc.zip
