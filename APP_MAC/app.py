@@ -1,7 +1,7 @@
 from sevens_engine import legacy_code
 exec(legacy_code(),globals())
-VERSION='3.7.9'
-CREATED_LABEL='20/10/2026'
+VERSION='3.7.10'
+CREATED_LABEL='23/10/2026'
 from sevens_paths import output_root
 REPORTS_DIR=output_root()
 OUT_DIR=REPORTS_DIR
@@ -45,8 +45,28 @@ with col3:
     with st.container(border=True,key='upload_pdf'):
         file_heading('Subir resumen IATA · opcional')
         resumen_pdf_file=st.file_uploader('Subir resumen IATA · opcional',type=['pdf'],key='pdf_iata',label_visibility='collapsed')
+from iata_period import period_from_text
+import hashlib
+period_key = 'periodo_iata_uy'
+if period_key not in st.session_state:
+    st.session_state[period_key] = (pd.Timestamp.today().date(), pd.Timestamp.today().date())
+pdf_signature = hashlib.sha256(resumen_pdf_file.getvalue()).hexdigest() if resumen_pdf_file is not None else None
+if st.session_state.get('periodo_pdf_signature') != pdf_signature:
+    st.session_state['periodo_pdf_signature'] = pdf_signature
+    detected_period = None
+    if resumen_pdf_file is not None:
+        pdf_text, _ = _iata_pdf_text(resumen_pdf_file)
+        detected_period = period_from_text(pdf_text)
+    st.session_state['periodo_pdf_detectado'] = detected_period
+    if detected_period:
+        st.session_state[period_key] = detected_period
+if resumen_pdf_file is not None:
+    if st.session_state.get('periodo_pdf_detectado'):
+        st.caption('Período detectado del resumen IATA. Podés ajustarlo manualmente.')
+    else:
+        st.warning('No se pudo detectar el período del resumen IATA. Seleccionalo manualmente.')
 with st.container(border=True):
-    periodo=st.date_input('Período IATA',value=(pd.Timestamp.today().date(),pd.Timestamp.today().date()),help='Elegí primero el día inicial y después el día final del período IATA.')
+    periodo=st.date_input('Período IATA',key=period_key,help='Se completa desde el resumen PDF IATA. Podés elegir otras fechas manualmente.')
 
 if isinstance(periodo, tuple) and len(periodo) == 2:
     start_date, end_date = periodo

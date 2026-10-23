@@ -27,13 +27,13 @@ jobs:
         with:
           tag_name: v${{ steps.version.outputs.value }}
           target_commitish: ${{ github.sha }}
-          name: Conciliador IATA ${{ steps.version.outputs.value }} · 20/10/2026
+          name: Conciliador IATA ${{ steps.version.outputs.value }} · 23/10/2026
           make_latest: true
           fail_on_unmatched_files: true
           body: |
-            Repara el acceso de Mac con lanzador nativo universal. Prepara el bundle fuera de carpetas sincronizadas y renueva el acceso sin borrarlo ni moverlo primero, con respaldo y firma verificada. Conserva la carga Windows y el motor de conciliacion.
-            Mismos accesos de escritorio en Mac y Windows, actualización automática, reapertura de la ventana y resultados en Documentos.
-            Incluye migración automática desde los actualizadores anteriores. Se conservan los históricos y la configuración local.
+            Completa automáticamente el período desde el encabezado Billing Period del resumen PDF IATA, con edición manual disponible.
+            Si el período no se reconoce, permite seleccionarlo manualmente.
+            Sin cambios en los cálculos ni en el motor de conciliación. Paquetes para Mac y Windows.
           files: |
             build/latest_mac.zip
             build/latest_pc.zip
