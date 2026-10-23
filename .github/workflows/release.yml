@@ -31,9 +31,9 @@ jobs:
           make_latest: true
           fail_on_unmatched_files: true
           body: |
-            Completa automáticamente el período desde el encabezado Billing Period del resumen PDF IATA, con edición manual disponible.
-            Si el período no se reconoce, permite seleccionarlo manualmente.
-            Sin cambios en los cálculos ni en el motor de conciliación. Paquetes para Mac y Windows.
+            Conserva el acceso de escritorio y su icono personalizado en Mac cuando el lanzador, su ruta y el logo ya son correctos.
+            Evita reconstruir el bundle de Finder por un cambio de versión de la aplicación.
+            Conserva la detección automática del período IATA. Sin cambios en los cálculos.
           files: |
             build/latest_mac.zip
             build/latest_pc.zip

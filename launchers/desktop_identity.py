@@ -11,6 +11,26 @@ def write_changed(path,data):
     path.write_bytes(data)
     return True
 
+def current_mac_shortcut(bundle,target):
+    """Conservar el bundle de Finder si sus recursos funcionales ya son los correctos."""
+    try:
+        info=plistlib.loads((bundle/'Contents/Info.plist').read_bytes())
+        if info.get('CFBundleIdentifier') not in IDS or info.get('CFBundleExecutable')!='UruguayLauncher':
+            return False
+        icon=info.get('CFBundleIconFile','')
+        if not icon or Path(icon).name!=icon:
+            return False
+        if not icon.endswith('.icns'):icon+='.icns'
+        resources=bundle/'Contents/Resources'
+        if (resources/icon).read_bytes()!=(target/'assets/Conciliador_IATA_Maveric.icns').read_bytes():
+            return False
+        if (bundle/'Contents/MacOS/UruguayLauncher').read_bytes()!=(target/'assets/mac_launcher').read_bytes():
+            return False
+        command='#!/bin/bash\nexec /bin/zsh '+shlex.quote(str(target/'launchers/Abrir_Conciliador_Sevens_Mac.command'))+' >> '+shlex.quote(str(target/'logs/acceso_escritorio.log'))+' 2>&1\n'
+        return (resources/'launch.sh').read_text()==command and os.access(bundle/'Contents/MacOS/UruguayLauncher',os.X_OK)
+    except (OSError,ValueError,plistlib.InvalidFileException):
+        return False
+
 def refresh(target,desktop=None):
     target=Path(target)
     settings=json.loads((target/'settings.json').read_text(encoding='utf-8'))
@@ -49,6 +69,11 @@ $link.Save()
         if existing:
             info=plistlib.loads((existing/'Contents/Info.plist').read_bytes())
             if info.get('CFBundleIdentifier') not in IDS:raise ValueError('El acceso existente pertenece a otro programa')
+        # Un cambio de versión de la aplicación no requiere recrear su acceso.
+        # Conservar también el icono personalizado y los metadatos de Finder/iCloud.
+        if existing==bundle and current_mac_shortcut(bundle,target):
+            write_changed(marker,(version+'\n').encode())
+            return
         # Construir y firmar un bundle limpio; el original se conserva hasta verificarlo.
         logs=target/'logs';logs.mkdir(parents=True,exist_ok=True)
         with tempfile.TemporaryDirectory(prefix='sevens-desktop-') as temp:
