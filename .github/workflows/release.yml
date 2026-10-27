@@ -27,13 +27,13 @@ jobs:
         with:
           tag_name: v${{ steps.version.outputs.value }}
           target_commitish: ${{ github.sha }}
-          name: Conciliador IATA ${{ steps.version.outputs.value }} · 23/10/2026
+          name: Conciliador IATA ${{ steps.version.outputs.value }} · 27/10/2026
           make_latest: true
           fail_on_unmatched_files: true
           body: |
-            Conserva los accesos Mac reparados que inician en segundo plano, incluidos los que apuntan a un lanzador fuera de iCloud.
-            Evita reemplazar el acceso estable por el lanzador anterior durante una actualización.
-            Mantiene el logo y la detección automática del período. Sin cambios en los cálculos.
+            Corrige la lectura de importes positivos EMDS/EMDA cuando la búsqueda desplazada recorta dígitos del campo completo.
+            Evita conciliar por error contra el importe recortado. Conserva las reglas de los demás documentos y las tolerancias existentes.
+            Validado con comparación completa de la semana y pruebas Mac/Windows. No modifica el acceso de escritorio.
           files: |
             build/latest_mac.zip
             build/latest_pc.zip

@@ -1,8 +1,8 @@
 {
   "kind": "IATA",
-  "version": "3.7.12",
+  "version": "3.7.13",
   "repo": "stournier77/conciliador-tuki-updates",
   "port": 8761,
   "install_folder": "App Conciliador IATA Maveric",
-  "release_date": "23/10/2026"
+  "release_date": "27/10/2026"
 }
