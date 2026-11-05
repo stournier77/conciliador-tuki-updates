@@ -27,13 +27,13 @@ jobs:
         with:
           tag_name: v${{ steps.version.outputs.value }}
           target_commitish: ${{ github.sha }}
-          name: Conciliador IATA ${{ steps.version.outputs.value }} · 27/10/2026
+          name: Conciliador IATA ${{ steps.version.outputs.value }} · 05/11/2026
           make_latest: true
           fail_on_unmatched_files: true
           body: |
-            Corrige la lectura de importes positivos EMDS/EMDA cuando la búsqueda desplazada recorta dígitos del campo completo.
-            Evita conciliar por error contra el importe recortado. Conserva las reglas de los demás documentos y las tolerancias existentes.
-            Validado con comparación completa de la semana y pruebas Mac/Windows. No modifica el acceso de escritorio.
+            Corrige la lectura de ACMA mediante el campo total completo del TXT, en lugar de elegir el importe negativo más grande.
+            Validación contra la última columna de los PDF IATA y comparación de históricos. Conserva las excepciones manuales y el tratamiento de SPCR, EMD, TKTT, RFND y ADM.
+            Sin cambios en tolerancias, accesos de escritorio ni lógica de los demás documentos.
           files: |
             build/latest_mac.zip
             build/latest_pc.zip
