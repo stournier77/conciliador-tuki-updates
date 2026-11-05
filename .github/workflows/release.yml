@@ -31,9 +31,9 @@ jobs:
           make_latest: true
           fail_on_unmatched_files: true
           body: |
-            Corrige la lectura de ACMA mediante el campo total completo del TXT, en lugar de elegir el importe negativo más grande.
-            Validación contra la última columna de los PDF IATA y comparación de históricos. Conserva las excepciones manuales y el tratamiento de SPCR, EMD, TKTT, RFND y ADM.
-            Sin cambios en tolerancias, accesos de escritorio ni lógica de los demás documentos.
+            Agrega un control opcional entre el PDF detallado FCAGBILLDET y el TXT IATA Uruguay en USD, por documento, tipo, compañía y fecha.
+            Lee la última columna Neto a pagar, incluyendo pagos mixtos CA/CC y documentos que continúan en la página siguiente. Informa diferencias, faltantes y lectura incompleta.
+            Permite descargar y guardar un Excel de control separado. No reemplaza importes ni cambia cálculos, tolerancias o accesos de escritorio.
           files: |
             build/latest_mac.zip
             build/latest_pc.zip

@@ -4,7 +4,7 @@ from iata_emd import apply_emd_amount_fix
 apply_emd_amount_fix(globals())
 from iata_acm import apply_acm_amount_fix
 apply_acm_amount_fix(globals())
-VERSION='3.7.14'
+VERSION='3.7.15'
 CREATED_LABEL='05/11/2026'
 from sevens_paths import output_root
 REPORTS_DIR=output_root()
@@ -49,6 +49,32 @@ with col3:
     with st.container(border=True,key='upload_pdf'):
         file_heading('Subir resumen IATA · opcional')
         resumen_pdf_file=st.file_uploader('Subir resumen IATA · opcional',type=['pdf'],key='pdf_iata',label_visibility='collapsed')
+with st.expander('Comprobar con PDF detallado · opcional'):
+    st.caption('Cargá el archivo FCAGBILLDET. Se compara la última columna «Neto a pagar» en USD con los documentos del TXT.')
+    detalle_pdf_file=st.file_uploader('PDF detallado IATA · control opcional',type=['pdf'],key='pdf_detalle_iata')
+    comprobar_pdf=st.button('COMPROBAR PDF CONTRA TXT',key='comprobar_pdf',disabled=not(txt_file and detalle_pdf_file))
+
+from iata_pdf_control import parse_detail_pdf, make_control, control_excel
+import hashlib
+cached_detail_pdf=st.cache_data(show_spinner=False,max_entries=2)(parse_detail_pdf)
+control_signature=None
+if txt_file is not None and detalle_pdf_file is not None:
+    control_signature=hashlib.sha256(detalle_pdf_file.getvalue()).hexdigest()+hashlib.sha256(txt_file.getvalue()).hexdigest()
+
+def run_pdf_control():
+    previous=st.session_state.get('control_pdf_iata')
+    if previous and previous['signature']==control_signature:return previous['control']
+    raw_pdf=detalle_pdf_file.getvalue();raw_txt=txt_file.getvalue()
+    with st.spinner('Leyendo el detalle IATA y comprobando documentos…'):
+        parsed=cached_detail_pdf(raw_pdf)
+        control=make_control(raw_pdf,raw_txt,globals(),parsed_pdf=parsed)
+    st.session_state['control_pdf_iata']={'signature':control_signature,'control':control}
+    return control
+
+if comprobar_pdf:
+    try:run_pdf_control()
+    except Exception as exc:st.error('No se pudo completar el control PDF: '+str(exc))
+
 from iata_period import period_from_text
 import hashlib
 period_key = 'periodo_iata_uy'
@@ -101,7 +127,30 @@ if st.button("GENERAR CONCILIACIÓN",type="primary",icon=":material/fact_check:"
             st.success("Conciliación generada correctamente.")
             st.download_button("Descargar Excel conciliado", data=data, file_name=filename, mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
             st.info(f"También se guardó una copia en: {out_dir}")
+            if detalle_pdf_file is not None:
+                try:
+                    control=run_pdf_control()
+                    control_path=out_dir/('Control_PDF_'+filename)
+                    control_path.write_bytes(control_excel(control))
+                    st.info('También se guardó el control PDF: '+str(control_path))
+                except Exception as exc:
+                    st.warning('La conciliación está generada. El control PDF quedó pendiente: '+str(exc))
         except Exception as e:
             st.exception(e)
+
+saved_control=st.session_state.get('control_pdf_iata')
+if control_signature and saved_control and saved_control['signature']==control_signature:
+    control=saved_control['control']
+    with st.expander('Resultado del control PDF · USD',expanded=True):
+        details=control['details'];differences=details.loc[details['Estado']!='Coincide']
+        count=len(differences);issues=control['issues']
+        if count or not issues.empty:
+            st.warning(f'{len(details)} documentos comprobados; {count} requieren revisión. Observaciones de lectura del PDF: {len(issues)}.')
+        else:st.success(f'Coinciden los {len(details)} documentos del PDF y del TXT.')
+        st.caption('El control es independiente: no reemplaza importes ni modifica la conciliación. Los registros repetidos se agrupan por tipo, compañía, documento y fecha.')
+        st.dataframe(control['totals_type'],hide_index=True,use_container_width=True)
+        if count:st.dataframe(differences,hide_index=True,use_container_width=True)
+        if not issues.empty:st.dataframe(issues,hide_index=True,use_container_width=True)
+        st.download_button('Descargar control PDF en Excel',data=control_excel(control),file_name='Control_PDF_IATA_USD.xlsx',mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',key='descargar_control_pdf')
 
 footer()

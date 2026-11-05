@@ -54,7 +54,7 @@ class AppTests(unittest.TestCase):
             self.assertFalse(app.exception)
             self.assertEqual([b.label for b in app.sidebar.button],['Abrir carpeta de conciliaciones','Cerrar aplicación'])
             self.assertTrue(next(b for b in app.button if b.label=='GENERAR CONCILIACIÓN').disabled)
-            expected=2 if KIND=='Bancos' else 3
+            expected=2 if KIND=='Bancos' else 4
             self.assertEqual(len(app.get('file_uploader')),expected)
             self.assertEqual(sevens_paths.output_root(),Path(temporary)/('App Conciliador '+KIND+' Maveric')/'archivos conciliados')
             if KIND=='Bancos' and not existed and auth.exists():auth.unlink()
